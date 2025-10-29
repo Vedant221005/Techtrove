@@ -12,14 +12,19 @@ dotenv.config();
 
 const app = express();
 
+// Server state
+let isDbConnected = false;
+
 // Connect to database
 (async () => {
   try {
     await connectDB();
     console.log('Database connected successfully');
+    isDbConnected = true;
   } catch (error) {
     console.error('Database connection failed:', error);
-    process.exit(1);
+    // Don't exit, let the server start and retry connection
+    isDbConnected = false;
   }
 })();
 
@@ -43,17 +48,41 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 
+// Health check route
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Routes
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  console.error('Stack:', err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server Error';
+  
+  console.error('Error:', {
+    statusCode,
+    message,
+    path: req.path,
+    method: req.method,
+    timestamp: new Date().toISOString(),
+    stack: err.stack
+  });
+
+  res.status(statusCode).json({
+    success: false,
+    message,
+    error: process.env.NODE_ENV === 'development' ? {
+      stack: err.stack,
+      details: err.message
+    } : 'Internal Server Error',
+    dbStatus: isDbConnected ? 'connected' : 'disconnected'
   });
 });
 
