@@ -1,1 +1,1 @@
-export const API_URL = 'https://techtrove-api.onrender.com';
+export const API_URL = 'https://techtrove-uspn.onrender.com';
