@@ -49,6 +49,7 @@ A full-stack shopping cart application built with React, Vite, Express, and Mong
    Update the MongoDB connection string in `.env`
 
    MONGODB_URI=mongodb+srv://ranevedant05:vedant321@cluster0.smvof4e.mongodb.net/
+   
    PORT=5001   
 
 4. Start the development servers:
