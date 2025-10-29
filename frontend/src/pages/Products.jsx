@@ -19,19 +19,19 @@ export default function Products() {
       setError(null);
       setLoading(true);
       
-      const response = await fetch('/api/products');
+      // Try fetching from Fake Store API directly
+      const response = await fetch('https://fakestoreapi.com/products', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+        throw new Error(`Error fetching products: ${response.status}`);
       }
 
-      const text = await response.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        console.error('Invalid JSON response:', text);
-        throw new Error('Invalid response from server');
-      }
+      const data = await response.json();
+      console.log('Fetched products:', data);
       
       // Ensure we have an array of products
       if (Array.isArray(data)) {
@@ -54,34 +54,27 @@ export default function Products() {
   async function handleAddToCart(product) {
     try {
       console.log('Adding product to cart:', product);
-      const payload = {
-        quantity: 1,
-        product: {
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          description: product.description,
-          image: product.image,
-          category: product.category,
-          rating: product.rating
-        }
-      };
-      console.log('Request payload:', payload);
-
-      const response = await fetch('/api/cart', {
+      const apiUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:5001' 
+        : 'https://techtrove-uspn.onrender.com';
+      const response = await fetch(`${apiUrl}/api/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          quantity: 1,
+          product: {
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            description: product.description,
+            image: product.image,
+            category: product.category,
+            rating: product.rating
+          }
+        }),
       });
-
-      const data = await response.json();
-      console.log('Server response:', data);
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to add item to cart');
-      }
       
       toast.success('Added to Cart', {
         description: `${product.title || product.name} has been added to your cart.`

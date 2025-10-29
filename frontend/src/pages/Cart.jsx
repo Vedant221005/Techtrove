@@ -20,26 +20,13 @@ export default function Cart() {
       setError(null);
       setLoading(true);
       
-      const response = await fetch('/api/cart');
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const response = await fetch(`${apiUrl}/api/cart`);
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Cart fetch error response:', errorText);
         throw new Error('Failed to fetch cart');
       }
-
-      const text = await response.text();
-      console.log('Cart response:', text);
-      
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        console.error('Invalid JSON in cart response:', text);
-        throw new Error('Invalid cart data received');
-      }
-
-      console.log('Parsed cart data:', data);
-      setCart(data || { items: [], total: 0 });
+      const data = await response.json();
+      setCart(data);
     } catch (error) {
       console.error('Error fetching cart:', error);
       setError(error.message);
@@ -52,7 +39,8 @@ export default function Cart() {
   async function handleUpdateQuantity(itemId, newQuantity) {
     if (newQuantity < 1) return; // Prevent negative quantities
     try {
-      await fetch('/api/cart', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const response = await fetch(`${apiUrl}/api/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +50,11 @@ export default function Cart() {
           quantity: newQuantity
         }),
       });
-      // Fetch updated cart to reflect the new total
+
+      if (!response.ok) {
+        throw new Error('Failed to update quantity');
+      }
+      
       await fetchCart();
     } catch (error) {
       console.error('Error updating quantity:', error);
@@ -72,9 +64,15 @@ export default function Cart() {
 
   async function handleRemoveItem(itemId) {
     try {
-      await fetch(`/api/cart/${itemId}`, {
-        method: 'DELETE',
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const response = await fetch(`${apiUrl}/api/cart/${itemId}`, {
+        method: 'DELETE'
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to remove item');
+      }
+      
       await fetchCart();
     } catch (error) {
       console.error('Error removing item:', error);
