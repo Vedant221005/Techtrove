@@ -1,0 +1,1 @@
+export const API_URL = 'https://techtrove-api.onrender.com';

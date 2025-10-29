@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { CartItem } from '../components/CartItem';
 import { useUser } from '../lib/userContext.jsx';
+import { API_URL } from '../lib/config.js';
 
 export default function Cart() {
   const [cart, setCart] = useState({ items: [], total: 0 });
@@ -20,10 +21,9 @@ export default function Cart() {
       setError(null);
       setLoading(true);
       
-      const apiUrl = 'https://techtrove-uspn.onrender.com';
-      console.log('Fetching cart from:', `${apiUrl}/api/cart`);
+      console.log('Fetching cart from:', `${API_URL}/api/cart`);
       
-      const response = await fetch(`${apiUrl}/api/cart`, {
+      const response = await fetch(`${API_URL}/api/cart`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -55,8 +55,6 @@ export default function Cart() {
     if (newQuantity < 1) return; // Prevent negative quantities
     
     try {
-      const apiUrl = 'https://techtrove-uspn.onrender.com';
-      
       // Optimistically update the UI first
       setCart(prevCart => {
         const updatedItems = prevCart.items.map(item => 
@@ -77,7 +75,7 @@ export default function Cart() {
         };
       });
 
-      const response = await fetch(`${apiUrl}/api/cart`, {
+      const response = await fetch(`${API_URL}/api/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -113,8 +111,7 @@ export default function Cart() {
 
   async function handleRemoveItem(itemId) {
     try {
-      const apiUrl = 'https://techtrove-uspn.onrender.com';
-      const response = await fetch(`${apiUrl}/api/cart/${itemId}`, {
+      const response = await fetch(`${API_URL}/api/cart/${itemId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'

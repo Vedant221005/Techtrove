@@ -4,6 +4,7 @@ import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
 import { Receipt } from '../components/Receipt';
 import { useUser } from '../lib/userContext.jsx';
+import { API_URL } from '../lib/config.js';
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function Checkout() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/cart/checkout', {
+      const response = await fetch(`${API_URL}/api/cart/checkout`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
