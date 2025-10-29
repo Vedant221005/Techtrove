@@ -8,7 +8,7 @@ coverage/
 
 # Production
 build/
-dist/
+#dist/
 out/
 
 # Misc
@@ -33,7 +33,7 @@ yarn-error.log*
 *.swo
 
 # Build
-dist/
+#dist/
 dist-ssr/
 *.local
 
@@ -45,3 +45,10 @@ dist-ssr/
 *.njsproj
 *.sln
 *.sw?
+
+# ---------------------------------------------------------------- #
+# GITHUB PAGES DEPLOYMENT EXCEPTION (CRITICAL ADDITION)
+# ---------------------------------------------------------------- #
+# This line overrides previous 'dist' ignores to allow the specific 
+# frontend/dist folder (which contains your final static site) to be tracked.
+!/frontend/dist/
