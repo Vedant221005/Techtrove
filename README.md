@@ -2,6 +2,35 @@
 
 A full-stack shopping cart application built with React, Vite, Express, and MongoDB.
 
+## Screenshots
+
+### Home Page
+![Home Page](./.github/images/home.png)
+![Home Page](./.github/images/home2.png)
+
+### Products Page
+![Products Page](./.github/images/product1.png)
+![Products Page](./.github/images/product2.png)
+![Products Page](./.github/images/product3.png)
+![Products Page](./.github/images/product4.png)
+![Products Page](./.github/images/product5.png)
+![Products Page](./.github/images/product6.png)
+![Products Page](./.github/images/product7.png)
+![Products Page](./.github/images/product8.png)
+![Products Page](./.github/images/product9.png)
+
+### Shopping Cart
+![Shopping Cart](./.github/images/cart1.png)
+![Shopping Cart](./.github/images/cart2.png)
+
+### Login
+![Login Page](./.github/images/login.png)
+
+### Checkout Page
+![Checkout Page](./.github/images/checkout1.png)
+![Checkout Page](./.github/images/checkout2.png)
+![Checkout Page](./.github/images/checkout3.png)
+
 ## Tech Stack
 
 ### Frontend
@@ -49,7 +78,7 @@ A full-stack shopping cart application built with React, Vite, Express, and Mong
    Update the MongoDB connection string in `.env`
 
    MONGODB_URI=mongodb+srv://ranevedant05:vedant321@cluster0.smvof4e.mongodb.net/
-   
+
    PORT=5001   
 
 4. Start the development servers:
