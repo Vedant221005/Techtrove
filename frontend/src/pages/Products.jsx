@@ -54,7 +54,7 @@ export default function Products() {
   async function handleAddToCart(product) {
     try {
       console.log('Adding product to cart:', product);
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const apiUrl = 'https://techtrove-uspn.onrender.com';
       console.log('Using API URL:', apiUrl);
       
       const cartData = {
@@ -75,10 +75,8 @@ export default function Products() {
       const response = await fetch(`${apiUrl}/api/cart`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Content-Type': 'application/json'
         },
-        mode: 'cors',
         body: JSON.stringify(cartData),
       });
 

@@ -170,53 +170,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// @route   POST /api/cart
-// @desc    Add item to cart or update quantity
-router.post('/', async (req, res) => {
-  try {
-    const { quantity, itemId } = req.body;
-    const userId = 'default-user';
 
-    // If itemId is provided, update existing cart item
-    if (itemId) {
-      console.log('Updating quantity for cart item:', itemId, 'to:', quantity);
-      
-      if (typeof quantity !== 'number' || quantity < 1) {
-        return res.status(400).json({ message: 'Invalid quantity' });
-      }
-
-      const cartItem = await CartItem.findById(itemId);
-      if (!cartItem) {
-        return res.status(404).json({ message: 'Cart item not found' });
-      }
-
-      // Update the quantity
-      cartItem.quantity = quantity;
-      await cartItem.save();
-
-      // Recalculate cart total
-      const allItems = await CartItem.find({ userId });
-      const total = allItems.reduce((sum, item) => {
-        const itemPrice = parseFloat(item.product.price) || 0;
-        const itemQuantity = parseInt(item.quantity) || 0;
-        return sum + (itemPrice * itemQuantity);
-      }, 0);
-
-      console.log('Updated cart total:', total);
-
-      return res.json({
-        item: cartItem,
-        total: Number(total.toFixed(2))
-      });
-    }
-
-    // If no itemId, treat as new item (existing code for adding new items)
-    // ... rest of the existing code for adding new items ...
-  } catch (error) {
-    console.error('Cart operation error:', error);
-    res.status(500).json({ message: error.message });
-  }
-});
 
 // @route   DELETE /api/cart/:id
 // @desc    Remove item from cart

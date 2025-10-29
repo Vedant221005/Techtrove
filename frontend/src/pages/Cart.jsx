@@ -20,16 +20,14 @@ export default function Cart() {
       setError(null);
       setLoading(true);
       
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const apiUrl = 'https://techtrove-uspn.onrender.com';
       console.log('Fetching cart from:', `${apiUrl}/api/cart`);
       
       const response = await fetch(`${apiUrl}/api/cart`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        credentials: 'omit' // Don't send credentials
+          'Content-Type': 'application/json'
+        }
       });
       
       console.log('Cart fetch response status:', response.status);
@@ -57,7 +55,7 @@ export default function Cart() {
     if (newQuantity < 1) return; // Prevent negative quantities
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const apiUrl = 'https://techtrove-uspn.onrender.com';
       
       // Optimistically update the UI first
       setCart(prevCart => {
@@ -82,7 +80,7 @@ export default function Cart() {
       const response = await fetch(`${apiUrl}/api/cart`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           itemId,
@@ -115,9 +113,12 @@ export default function Cart() {
 
   async function handleRemoveItem(itemId) {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      const apiUrl = 'https://techtrove-uspn.onrender.com';
       const response = await fetch(`${apiUrl}/api/cart/${itemId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       if (!response.ok) {
