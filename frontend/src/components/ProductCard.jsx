@@ -31,11 +31,19 @@ export function ProductCard({ product, onAddToCart }) {
     setIsAdding(true);
     try {
       // Pass the complete product data and ensure we send the id
-      await onAddToCart({
+      const productToAdd = {
         ...product,
         _id: product.id, // Keep both id and _id for compatibility
         id: product.id,  // Ensure id is present
+        price: parseFloat(product.price),
         isFakeStore: true
+      };
+      console.log('Sending product data:', productToAdd);
+      await onAddToCart(productToAdd);
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Failed to Add Item', {
+        description: error.message || 'There was a problem adding this item to your cart.'
       });
     } finally {
       setIsAdding(false);

@@ -21,11 +21,27 @@ export default function Cart() {
       setLoading(true);
       
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
-      const response = await fetch(`${apiUrl}/api/cart`);
+      console.log('Fetching cart from:', `${apiUrl}/api/cart`);
+      
+      const response = await fetch(`${apiUrl}/api/cart`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'omit' // Don't send credentials
+      });
+      
+      console.log('Cart fetch response status:', response.status);
+      
       if (!response.ok) {
-        throw new Error('Failed to fetch cart');
+        const errorText = await response.text();
+        console.error('Cart fetch error response:', errorText);
+        throw new Error(`Failed to fetch cart: ${response.status} - ${errorText}`);
       }
+      
       const data = await response.json();
+      console.log('Cart data received:', data);
       setCart(data);
     } catch (error) {
       console.error('Error fetching cart:', error);
@@ -37,9 +53,32 @@ export default function Cart() {
   }
 
   async function handleUpdateQuantity(itemId, newQuantity) {
+    console.log('Handling quantity update:', { itemId, newQuantity });
     if (newQuantity < 1) return; // Prevent negative quantities
+    
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      
+      // Optimistically update the UI first
+      setCart(prevCart => {
+        const updatedItems = prevCart.items.map(item => 
+          item._id === itemId 
+            ? { ...item, quantity: newQuantity }
+            : item
+        );
+        
+        // Calculate new total
+        const newTotal = updatedItems.reduce((sum, item) => 
+          sum + (item.product.price * item.quantity), 0
+        );
+        
+        return {
+          ...prevCart,
+          items: updatedItems,
+          total: Number(newTotal.toFixed(2))
+        };
+      });
+
       const response = await fetch(`${apiUrl}/api/cart`, {
         method: 'POST',
         headers: {
@@ -54,11 +93,23 @@ export default function Cart() {
       if (!response.ok) {
         throw new Error('Failed to update quantity');
       }
+
+      const responseData = await response.json();
       
-      await fetchCart();
+      // Update cart with server response
+      setCart(prevCart => ({
+        ...prevCart,
+        items: prevCart.items.map(item =>
+          item._id === itemId
+            ? { ...item, quantity: responseData.item.quantity }
+            : item
+        ),
+        total: responseData.total
+      }));
     } catch (error) {
       console.error('Error updating quantity:', error);
-      // Could add toast notification here for error feedback
+      // Refresh cart to revert changes if there was an error
+      fetchCart();
     }
   }
 

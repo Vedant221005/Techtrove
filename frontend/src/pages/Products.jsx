@@ -54,27 +54,50 @@ export default function Products() {
   async function handleAddToCart(product) {
     try {
       console.log('Adding product to cart:', product);
-      const apiUrl = window.location.hostname === 'localhost' 
-        ? 'http://localhost:5001' 
-        : 'https://techtrove-uspn.onrender.com';
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+      console.log('Using API URL:', apiUrl);
+      
+      const cartData = {
+        quantity: 1,
+        product: {
+          id: parseInt(product.id),
+          title: product.title,
+          price: parseFloat(product.price),
+          description: product.description || '',
+          image: product.image || '',
+          category: product.category || '',
+          rating: product.rating || { rate: 0, count: 0 }
+        }
+      };
+      
+      console.log('Sending cart data:', cartData);
+      
       const response = await fetch(`${apiUrl}/api/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        body: JSON.stringify({
-          quantity: 1,
-          product: {
-            id: product.id,
-            title: product.title,
-            price: product.price,
-            description: product.description,
-            image: product.image,
-            category: product.category,
-            rating: product.rating
-          }
-        }),
+        mode: 'cors',
+        body: JSON.stringify(cartData),
       });
+
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        let errorMessage = 'Failed to add to cart';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          // If we can't parse the error as JSON, use the status text
+          errorMessage = `${errorMessage}: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
+      }
+      
+      const responseData = await response.json();
+      console.log('Success response:', responseData);
       
       toast.success('Added to Cart', {
         description: `${product.title || product.name} has been added to your cart.`

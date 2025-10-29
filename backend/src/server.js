@@ -17,13 +17,10 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://vedant221005.github.io',
-    'https://techtrove-uspn.onrender.com'
-  ],
+  origin: ['http://localhost:5173', 'http://localhost:4173', 'https://vedant221005.github.io'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true
+  credentials: false, // Change to false since we don't need credentials
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 app.use(express.json());
 

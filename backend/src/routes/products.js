@@ -13,8 +13,10 @@ async function fetchFromFakeStore() {
     const response = await fetch('https://fakestoreapi.com/products', {
       method: 'GET',
       headers: {
-        'Accept': 'application/json'
-      }
+        'Accept': 'application/json',
+        'User-Agent': 'TechTrove/1.0'
+      },
+      timeout: 5000 // 5 second timeout
     });
 
     if (!response.ok) {

@@ -24,16 +24,25 @@ export function CartItem({ item, onUpdateQuantity, onRemove }) {
             variant="outline"
             size="icon"
             className="h-8 w-8"
-            onClick={() => onUpdateQuantity(item._id, Math.max(1, item.quantity - 1))}
+            onClick={() => {
+              if (item.quantity > 1) {
+                console.log('Decreasing quantity for item:', item._id);
+                onUpdateQuantity(item._id, item.quantity - 1);
+              }
+            }}
+            disabled={item.quantity <= 1}
           >
             -
           </Button>
-          <span className="w-8 text-center">{item.quantity}</span>
+          <span className="w-8 text-center font-medium">{item.quantity}</span>
           <Button
             variant="outline"
             size="icon"
             className="h-8 w-8"
-            onClick={() => onUpdateQuantity(item._id, item.quantity + 1)}
+            onClick={() => {
+              console.log('Increasing quantity for item:', item._id);
+              onUpdateQuantity(item._id, item.quantity + 1);
+            }}
           >
             +
           </Button>
