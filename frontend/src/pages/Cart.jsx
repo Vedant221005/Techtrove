@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { CartItem } from '../components/CartItem';
 import { useUser } from '../lib/userContext.jsx';
-import { API_URL } from '../lib/config.js';
+import { fetchApi } from '../lib/api.js';
 
 export default function Cart() {
   const [cart, setCart] = useState({ items: [], total: 0 });
@@ -20,25 +20,7 @@ export default function Cart() {
     try {
       setError(null);
       setLoading(true);
-      
-      console.log('Fetching cart from:', `${API_URL}/api/cart`);
-      
-      const response = await fetch(`${API_URL}/api/cart`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      console.log('Cart fetch response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Cart fetch error response:', errorText);
-        throw new Error(`Failed to fetch cart: ${response.status} - ${errorText}`);
-      }
-      
-      const data = await response.json();
+      const data = await fetchApi('/api/cart');
       console.log('Cart data received:', data);
       setCart(data);
     } catch (error) {
@@ -75,32 +57,23 @@ export default function Cart() {
         };
       });
 
-      const response = await fetch(`${API_URL}/api/cart`, {
+      const data = await fetchApi('/api/cart', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
         body: JSON.stringify({
           itemId,
           quantity: newQuantity
-        }),
+        })
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update quantity');
-      }
-
-      const responseData = await response.json();
       
       // Update cart with server response
       setCart(prevCart => ({
         ...prevCart,
         items: prevCart.items.map(item =>
           item._id === itemId
-            ? { ...item, quantity: responseData.item.quantity }
+            ? { ...item, quantity: data.item.quantity }
             : item
         ),
-        total: responseData.total
+        total: data.total
       }));
     } catch (error) {
       console.error('Error updating quantity:', error);
@@ -111,16 +84,9 @@ export default function Cart() {
 
   async function handleRemoveItem(itemId) {
     try {
-      const response = await fetch(`${API_URL}/api/cart/${itemId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        }
+      await fetchApi(`/api/cart/${itemId}`, {
+        method: 'DELETE'
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to remove item');
-      }
       
       await fetchCart();
     } catch (error) {
