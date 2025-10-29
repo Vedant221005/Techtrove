@@ -81,6 +81,12 @@ A full-stack shopping cart application built with React, Vite, Express, and Mong
 
    PORT=5001   
 
+   ```powershell
+   # In frontend folder
+   VITE_API_URL=https://techtrove-uspn.onrender.com
+
+
+
 4. Start the development servers:
    ```powershell
    # From root directory
