@@ -24,7 +24,7 @@ export default function Home() {
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 mt-8">
         <Button asChild size="lg" className="text-lg px-8 py-3 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.03] btn-primary">
-          <Link to="/products">🛍️ Browse Products</Link>
+          <Link to="/Techtrove/products">🛍️ Browse Products</Link>
         </Button>
       </div>
 

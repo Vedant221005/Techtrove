@@ -41,7 +41,7 @@ function App() {
 function ProtectedRoute({ children }) {
   const { user } = useUser();
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/Techtrove/login" />;
   }
   return children;
 }
@@ -52,7 +52,7 @@ function AppContent({ location }) {
   // Helper function for active link styles
   const getNavLinkClasses = (path) => 
     `flex items-center text-sm font-semibold transition-all duration-300 px-3 py-2 rounded-lg 
-    ${location.pathname === path 
+    ${location.pathname === `/Techtrove${path}` 
       ? 'bg-primary text-primary-foreground shadow-md' // Active state: strong background and shadow
       : 'text-muted-foreground hover:bg-accent hover:text-foreground' // Inactive state: subtle hover
     }`;
@@ -67,36 +67,36 @@ function AppContent({ location }) {
           <div className="flex items-center justify-between h-16">
             
             {/* Logo */}
-            <Link to="/" className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-400 bg-clip-text text-transparent">
+            <Link to="/Techtrove/" className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-400 bg-clip-text text-transparent">
               Tech Trove
             </Link>
             
             {/* Navigation Links */}
             <div className="flex items-center gap-2 md:gap-4">
-              <Link to="/" className={getNavLinkClasses('/')}>
+              <Link to="/Techtrove/" className={getNavLinkClasses('/')}>
                 Home
               </Link>
-              <Link to="/products" className={getNavLinkClasses('/products')}>
+              <Link to="/Techtrove/products" className={getNavLinkClasses('/products')}>
                 Products
               </Link>
-              <Link to="/cart" className={getNavLinkClasses('/cart')}>
-                <ShoppingCartIcon className="mr-1 h-5 w-5" />
+              <Link to="/Techtrove/cart" className={getNavLinkClasses('/cart')}>
+                <ShoppingCartIcon className={`mr-1 h-5 w-5 ${location.pathname === '/Techtrove/cart' ? 'text-white' : ''}`} />
                 Cart
               </Link>
               {user ? (
-                <>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground hidden md:inline">
+                    {user.email}
+                  </span>
                   <button
                     onClick={logout}
-                    className="flex items-center text-sm font-semibold text-red-500 hover:text-red-600 transition-colors px-3 py-2"
+                    className="flex items-center text-sm font-semibold text-red-500 hover:text-red-600 transition-colors px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-950"
                   >
                     Logout
                   </button>
-                  <span className="text-sm text-muted-foreground">
-                    {user.email}
-                  </span>
-                </>
+                </div>
               ) : (
-                <Link to="/login" className={getNavLinkClasses('/login')}>
+                <Link to="/Techtrove/login" className={getNavLinkClasses('/login')}>
                   Login
                 </Link>
               )}
@@ -108,11 +108,11 @@ function AppContent({ location }) {
       {/* Main Content Area */}
       <main className="flex-grow container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/Techtrove/login" element={<Login />} />
+          <Route path="/Techtrove/" element={<Home />} />
+          <Route path="/Techtrove/products" element={<Products />} />
           <Route
-            path="/cart"
+            path="/Techtrove/cart"
             element={
               <ProtectedRoute>
                 <Cart />
@@ -135,8 +135,8 @@ function AppContent({ location }) {
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} Tech Trove. All rights reserved.</p>
           <div className="flex justify-center gap-4 mt-2">
-            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-            <Link to="/products" className="hover:text-primary transition-colors">Products</Link>
+            <Link to="/Techtrove/" className="hover:text-primary transition-colors">Home</Link>
+            <Link to="/Techtrove/products" className="hover:text-primary transition-colors">Products</Link>
           </div>
         </div>
       </footer>
